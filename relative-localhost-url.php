@@ -12,7 +12,7 @@ class RelativeLocalhostUrl
 {
     public function __construct()
     {
-        add_action('registered_taxonomy', [__CLASS__, 'start']);
+        add_action('init', [__CLASS__, 'start']);
         add_action('shutdown', [__CLASS__, 'end']);
     }
 
@@ -28,7 +28,18 @@ class RelativeLocalhostUrl
 
     public static function callback($buffer)
     {
-        return preg_replace('/(http(s?):)?(\\?)\/(\\?)\/localhost((?!:)|:(\d{4}|\d{2})(?!\d{1}))/i', '', $buffer);
+		// Replace normal URLs
+		$home_url = esc_url(home_url('/'));
+		$home_url_relative = wp_make_link_relative($home_url);
+
+		// Replace URLs in inline scripts
+		$home_url_escaped = str_replace('/', '\/', $home_url);
+		$home_url_escaped_relative = str_replace('/', '\/', $home_url_relative);
+
+		$buffer = str_replace($home_url, $home_url_relative, $buffer);
+		$buffer = str_replace($home_url_escaped, $home_url_escaped_relative, $buffer);
+
+		return preg_replace('/(http(s?):)?(\\?)\/(\\?)\/localhost((?!:)|:(\d{4}|\d{2})(?!\d{1}))/i', '', $buffer);
     }
 }
 
