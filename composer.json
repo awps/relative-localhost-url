@@ -1,0 +1,11 @@
+{
+  "name": "awps/relative-localhost-url",
+  "type": "wordpress-plugin",
+  "authors": [
+    {
+      "name": "Andrei Surdu"
+    }
+  ],
+  "require": {
+  }
+}
